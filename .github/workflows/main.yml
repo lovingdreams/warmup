@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main  # Replace 'main' with the name of your target branch
+      - master  # Replace 'main' with the name of your target branch
 
 jobs:
   build:
