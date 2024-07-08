@@ -1,0 +1,32 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Lint and Validate Dockerfile
+        run: |
+          docker lint Dockerfile
+          docker validate Dockerfile
+
+      - name: Build Docker image
+        run: |
+          docker build -t johnymails/warmup12:${{ github.sha }} .
+          docker tag johnymails/warmup12:${{ github.sha }} johnymails/warmup12:latest
+
+      - name: Push Docker image
+        run: docker push johnymails/warmup12:${{ github.sha }}
